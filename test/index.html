@@ -229,6 +229,7 @@ layout: null
         .homepage-container{max-width:1200px;margin:0 auto;padding:1.5rem;}
 
         .section-title{font-size:1.1rem;font-weight:700;margin-bottom:1rem;padding-bottom:0.5rem;display:flex;align-items:center;justify-content:space-between;}
+        .section-title a{font-size:0.7rem;font-weight:500;text-decoration:none;color:var(--accent);}
 
         .country-toggle{display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;padding-bottom:0.5rem;user-select:none;}
         .country-toggle .toggle-arrow{font-size:0.7rem;transition:transform 0.2s;color:var(--accent);}
@@ -247,11 +248,12 @@ layout: null
         .featured-card.featured-no-image{background:linear-gradient(135deg,var(--accent-light) 0%,#fff 100%);border-left:4px solid var(--accent);}
         .featured-img{overflow:hidden;}
         .featured-img img{width:100%;height:100%;object-fit:cover;}
-        .featured-body{padding:1.25rem;flex:1;}
-        .featured-card h2{font-size:1.3rem;margin-bottom:0.5rem;}
+        .featured-body{padding:1.25rem;flex:1;min-width:0;overflow:hidden;}
+        .featured-card h2{font-size:1.3rem;margin-bottom:0.5rem;word-break:break-word;}
         .featured-card h2 a{color:#111;text-decoration:none;}
         .featured-card h2 a:hover{color:var(--accent);}
-        .featured-excerpt{font-size:0.85rem;color:#555;line-height:1.5;}
+        .featured-excerpt{font-size:0.85rem;color:#555;line-height:1.5;word-break:break-word;}
+        .featured-card .excerpt.spo{word-break:break-word;overflow-wrap:break-word;max-width:100%;overflow:hidden;}
 
         /* LATEST */
         .latest-section{margin-bottom:1.5rem;}
@@ -268,11 +270,12 @@ layout: null
         .latest-card.card-bg-tint{background:var(--accent-light);border-color:transparent;}
         .latest-img{width:100%;aspect-ratio:16/9;overflow:hidden;flex-shrink:0;}
         .latest-img img{width:100%;height:100%;object-fit:cover;}
-        .latest-body{padding:0.75rem;flex:1;display:flex;flex-direction:column;}
-        .latest-card h3{font-size:0.9rem;margin-bottom:0.35rem;flex:1;}
+        .latest-body{padding:0.75rem;flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+        .latest-card h3{font-size:0.9rem;margin-bottom:0.35rem;flex:1;word-break:break-word;}
         .latest-card h3 a{color:#111;text-decoration:none;}
         .latest-card h3 a:hover{color:var(--accent);}
         .latest-meta{font-size:0.65rem;color:#888;margin-top:auto;}
+        .latest-card .excerpt.spo{word-break:break-word;overflow-wrap:break-word;max-width:100%;overflow:hidden;}
 
         /* POPULAR */
         .popular-section{margin-bottom:1.5rem;}
@@ -280,18 +283,19 @@ layout: null
         .popular-list.grid-2{grid-template-columns:repeat(2,1fr);}
         .popular-list.list-1{grid-template-columns:1fr;}
         .popular-list.grid-4{grid-template-columns:repeat(4,1fr);}
-        .popular-item{display:flex;align-items:flex-start;gap:0.75rem;background:#fff;border:1px solid #e5e5e5;border-radius:var(--card-radius);padding:0.75rem;transition:all 0.15s ease;box-shadow:var(--card-shadow);word-wrap:break-word;overflow-wrap:break-word;max-width:100%;}
+        .popular-item{display:flex;align-items:flex-start;gap:0.75rem;background:#fff;border:1px solid #e5e5e5;border-radius:var(--card-radius);padding:0.75rem;transition:all 0.15s ease;box-shadow:var(--card-shadow);word-wrap:break-word;overflow-wrap:break-word;max-width:100%;overflow:hidden;}
         .popular-item:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08);}
         .popular-item.pop-accent-border{border-left:3px solid var(--accent);}
         .popular-item.pop-bg-tint{background:var(--accent-light);border-color:transparent;}
         .popular-item.pop-shadow-color{box-shadow:0 2px 8px var(--accent)20;}
-        .popular-img{width:70px;aspect-ratio:16/9;flex-shrink:0;border-radius:4px;overflow:hidden;}
+        .popular-img{width:70px;min-width:70px;max-width:70px;aspect-ratio:16/9;flex-shrink:0;border-radius:4px;overflow:hidden;}
         .popular-img img{width:100%;height:100%;object-fit:cover;}
-        .popular-content{flex:1;min-width:0;max-width:100%;}
-        .popular-content h3{font-size:0.85rem;margin-bottom:0.25rem;word-break:break-word;overflow-wrap:break-word;}
-        .popular-content h3 a{color:#111;text-decoration:none;}
+        .popular-content{flex:1;min-width:0;max-width:100%;overflow:hidden;}
+        .popular-content h3{font-size:0.85rem;margin-bottom:0.25rem;word-break:break-word;overflow-wrap:break-word;max-width:100%;}
+        .popular-content h3 a{color:#111;text-decoration:none;word-break:break-word;}
         .popular-content h3 a:hover{color:var(--accent);}
-        .popular-content p{font-size:0.7rem;color:#888;word-break:break-word;overflow-wrap:break-word;}
+        .popular-content p{font-size:0.7rem;color:#888;word-break:break-word;overflow-wrap:break-word;max-width:100%;}
+        .popular-content .excerpt.spo{word-break:break-word;overflow-wrap:break-word;max-width:100%;overflow:hidden;}
 
         /* COUNTRY */
         .country-links{display:grid;gap:0.4rem;}
@@ -324,7 +328,8 @@ layout: null
             .homepage-container{padding:1rem;}.header-spacer{height:52px;}
         }
         @media(max-width:480px){
-            .popular-item{flex-direction:column;align-items:flex-start;gap:0.5rem;}.popular-img{width:100%;aspect-ratio:16/9;}.popular-content{max-width:100%;}
+            .popular-item{flex-direction:column;align-items:flex-start;gap:0.5rem;}
+            .popular-img{width:100%;min-width:100%;max-width:100%;aspect-ratio:16/9;}
             .country-links.grid-6{grid-template-columns:repeat(2,1fr);}.country-links.masonry{columns:1;}
             .header-spacer{height:48px;}
         }
@@ -346,11 +351,7 @@ layout: null
                     <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
                     <div class="featured-excerpt">{{ post.description }}</div>
                     {% assign before_svg = post.content | split: '<p>' | first %}
-{% if before_svg != '' %}
-<div style="max-width:100%;overflow:hidden;word-break:break-word;overflow-wrap:break-word;">
-<div class="excerpt spo">{{ before_svg }}</div>
-</div>
-{% endif %}
+                    <div class="excerpt spo">{{ before_svg }}</div>
                 </div>
             </div>
         </div>
@@ -371,11 +372,7 @@ layout: null
                         <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
                         <div class="latest-meta">{{ post.date | date: "%b %d, %Y" }}</div>
                         {% assign before_svg = post.content | split: '<p>' | first %}
-{% if before_svg != '' %}
-<div style="max-width:100%;overflow:hidden;word-break:break-word;overflow-wrap:break-word;">
-<div class="excerpt spo">{{ before_svg }}</div>
-</div>
-{% endif %}
+                        <div class="excerpt spo">{{ before_svg }}</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -398,11 +395,7 @@ layout: null
                         <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
                         <p>{{ post.description | truncate: 80 }}</p>
                         {% assign before_svg = post.content | split: '<p>' | first %}
-{% if before_svg != '' %}
-<div style="max-width:100%;overflow:hidden;word-break:break-word;overflow-wrap:break-word;">
-<div class="excerpt spo">{{ before_svg }}</div>
-</div>
-{% endif %}
+                        <div class="excerpt spo">{{ before_svg }}</div>
                     </div>
                 </div>
                 {% endfor %}
