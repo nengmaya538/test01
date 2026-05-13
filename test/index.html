@@ -604,6 +604,254 @@ layout: null
     }
 }
 </style>
+
+<!-- Spotlight Section
+Kiri = 1 gambar besar
+Kanan = 2 gambar kecil
+Desktop + Mobile tetap sama -->
+
+<section id="hfSpotlightSection">
+
+    <div class="hf-spotlight-heading">
+        <h2 class="hf-spotlight-title">Spotlight</h2>
+    </div>
+
+    {% assign hf_main_post = site.categories.pisah01.first %}
+
+    <div class="hf-spotlight-layout">
+
+        <!-- LEFT : Main Spotlight -->
+        {% if hf_main_post %}
+        <div class="hf-spotlight-main">
+
+            <a href="{{ hf_main_post.url }}">
+                {% if hf_main_post.image %}
+                <div class="hf-spotlight-main-thumb">
+                    <img
+                        src="{{ hf_main_post.image | relative_url }}"
+                        alt="{{ hf_main_post.title }}"
+                        loading="lazy">
+                </div>
+                {% endif %}
+            </a>
+
+            <div class="hf-spotlight-main-content">
+                <h3 class="hf-spotlight-main-title">
+                    <a href="{{ hf_main_post.url }}">
+                        {{ hf_main_post.title }}
+                    </a>
+                </h3>
+
+                {% if hf_main_post.description %}
+                <p class="hf-spotlight-main-desc">
+                    {{ hf_main_post.description }}
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endif %}
+
+        <!-- RIGHT : 2 Small Spotlight -->
+        <div class="hf-spotlight-side">
+
+            {% for post in site.categories.pisah01 limit:2 offset:1 %}
+            <div class="hf-spotlight-side-card">
+
+                {% if post.image %}
+                <div class="hf-spotlight-side-thumb">
+                    <a href="{{ post.url }}">
+                        <img
+                            src="{{ post.image | relative_url }}"
+                            alt="{{ post.title }}"
+                            loading="lazy">
+                    </a>
+                </div>
+                {% endif %}
+
+                <div class="hf-spotlight-side-content">
+                    <h4 class="hf-spotlight-side-title">
+                        <a href="{{ post.url }}">
+                            {{ post.title }}
+                        </a>
+                    </h4>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<style>
+#hfSpotlightSection {
+    margin-top: 40px;
+}
+
+/* Section Title */
+.hf-spotlight-heading {
+    margin-bottom: 24px;
+}
+
+.hf-spotlight-title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+    color: #111;
+}
+
+/* Layout */
+.hf-spotlight-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+}
+
+/* LEFT BIG */
+.hf-spotlight-main {
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.hf-spotlight-main-thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.hf-spotlight-main-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hf-spotlight-main-content {
+    padding: 22px;
+}
+
+.hf-spotlight-main-title {
+    font-size: 28px;
+    line-height: 1.3;
+    margin: 0 0 12px;
+}
+
+.hf-spotlight-main-title a {
+    text-decoration: none;
+    color: #111;
+}
+
+.hf-spotlight-main-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #666;
+    margin: 0;
+}
+
+/* RIGHT SMALL */
+.hf-spotlight-side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.hf-spotlight-side-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.hf-spotlight-side-thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.hf-spotlight-side-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hf-spotlight-side-content {
+    padding: 14px;
+}
+
+.hf-spotlight-side-title {
+    font-size: 16px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.hf-spotlight-side-title a {
+    text-decoration: none;
+    color: #111;
+}
+
+/* MOBILE tetap layout sama */
+@media (max-width: 768px) {
+    #hfSpotlightSection {
+        margin-top: 20px;
+    }
+
+    .hf-spotlight-heading {
+        margin-bottom: 16px;
+    }
+
+    .hf-spotlight-title {
+        font-size: 22px;
+    }
+
+    .hf-spotlight-layout {
+        grid-template-columns: 2fr 1fr;
+        gap: 10px;
+    }
+
+    .hf-spotlight-main {
+        border-radius: 14px;
+    }
+
+    .hf-spotlight-side-card {
+        border-radius: 12px;
+    }
+
+    .hf-spotlight-main-content {
+        padding: 14px;
+    }
+
+    .hf-spotlight-main-title {
+        font-size: 16px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+
+    .hf-spotlight-main-desc {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .hf-spotlight-side-content {
+        padding: 10px;
+    }
+
+    .hf-spotlight-side-title {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .hf-spotlight-side {
+        gap: 10px;
+    }
+}
+</style>
+
         <!-- EXPLORE BY COUNTRY -->
         <div class="country-toggle" id="countryToggle" onclick="this.classList.toggle('open'); document.getElementById('countryWrap').classList.toggle('open');">
             <span class="toggle-arrow">&#9654;</span>
