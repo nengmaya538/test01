@@ -276,52 +276,44 @@ layout: null
             countryGrid.classList.add(["grid-6","grid-4","grid-3","pills","list-2","masonry"][domainHash % 6]);
         }
 
-        // MENU TOGGLE - no display:none
+        // MENU TOGGLE - FIXED
         var menuPanel = document.getElementById("blogMenuPanel");
         var toggleBtnBlog = document.getElementById("blogMenuToggle");
         var iconMenuBlog = document.getElementById("blogIconMenu");
         var iconCloseBlog = document.getElementById("blogIconClose");
 
-        function updateBlogMenuPosition() {
-            if (menuPanel && menuPanel.classList.contains("show") && toggleBtnBlog) {
-                var btnRect = toggleBtnBlog.getBoundingClientRect();
-                menuPanel.style.top = (btnRect.bottom + 5) + "px";
-                menuPanel.style.right = (window.innerWidth - btnRect.right) + "px";
-            }
-        }
-
-        if (toggleBtnBlog) {
+        if (toggleBtnBlog && menuPanel) {
             toggleBtnBlog.addEventListener("click", function(e) {
                 e.stopPropagation();
-                if (!menuPanel) return;
                 menuPanel.classList.toggle("show");
                 var isVisible = menuPanel.classList.contains("show");
                 if (iconMenuBlog) iconMenuBlog.style.display = isVisible ? "none" : "inline";
                 if (iconCloseBlog) iconCloseBlog.style.display = isVisible ? "inline" : "none";
-                if (isVisible) updateBlogMenuPosition();
+                if (isVisible) {
+                    var btnRect = toggleBtnBlog.getBoundingClientRect();
+                    menuPanel.style.top = (btnRect.bottom + 5) + "px";
+                    menuPanel.style.right = (window.innerWidth - btnRect.right) + "px";
+                }
             });
-        }
 
-        document.addEventListener("click", function(e) {
-            if (menuPanel && menuPanel.classList.contains("show")) {
-                if (!menuPanel.contains(e.target) && !toggleBtnBlog.contains(e.target)) {
+            document.addEventListener("click", function(e) {
+                if (menuPanel.classList.contains("show")) {
+                    if (!menuPanel.contains(e.target) && e.target !== toggleBtnBlog) {
+                        menuPanel.classList.remove("show");
+                        if (iconMenuBlog) iconMenuBlog.style.display = "inline";
+                        if (iconCloseBlog) iconCloseBlog.style.display = "none";
+                    }
+                }
+            });
+
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape" && menuPanel.classList.contains("show")) {
                     menuPanel.classList.remove("show");
                     if (iconMenuBlog) iconMenuBlog.style.display = "inline";
                     if (iconCloseBlog) iconCloseBlog.style.display = "none";
                 }
-            }
-        });
-
-        document.addEventListener("keydown", function(e) {
-            if (e.key === "Escape" && menuPanel && menuPanel.classList.contains("show")) {
-                menuPanel.classList.remove("show");
-                if (iconMenuBlog) iconMenuBlog.style.display = "inline";
-                if (iconCloseBlog) iconCloseBlog.style.display = "none";
-            }
-        });
-
-        window.addEventListener("resize", updateBlogMenuPosition);
-        window.addEventListener("scroll", updateBlogMenuPosition);
+            });
+        }
     })();
     </script>
 
@@ -337,13 +329,7 @@ layout: null
         .menu-btn-main:hover{opacity:0.6;}
         .menu-icon-main{width:24px;height:24px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
         
-        #blogMenuPanel{
-            visibility:hidden;opacity:0;transform:translateY(-8px);
-            transition:all 0.2s ease;
-            background:#fff;border:1px solid #e0e0e0;padding:16px;
-            position:fixed;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,0.12);
-            border-radius:10px;pointer-events:none;
-        }
+        #blogMenuPanel{visibility:hidden;opacity:0;transform:translateY(-8px);transition:all 0.2s ease;background:#fff;border:1px solid #e0e0e0;padding:16px;position:fixed;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,0.12);border-radius:10px;pointer-events:none;top:60px;right:16px;}
         #blogMenuPanel.show{visibility:visible;opacity:1;transform:translateY(0);pointer-events:auto;}
         #blogMenuPanel ul{list-style:none;margin:0;padding:0;}
         #blogMenuPanel li{margin:0;padding:0;}
