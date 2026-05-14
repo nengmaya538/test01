@@ -21,22 +21,9 @@ layout: null
     </script>
 
     <meta name="description" content="{{ page.description | default: page.title }}">
+
     <link rel="canonical" href="{{ page.url | absolute_url }}">
     
-    <script>
-    (function() {
-        var schemaData = {
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            "headline": "{{ page.title | escape }}",
-            "description": "{{ page.description | default: page.title | escape }}",
-            "url": "{{ page.url | absolute_url }}"
-            {% if page.image %},"image": "{{ page.image | absolute_url }}"{% endif %}
-        };
-        var s = document.createElement("script"); s.type = "application/ld+json"; s.textContent = JSON.stringify(schemaData); document.head.appendChild(s);
-    })();
-    </script>
-
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
 {% include head.html %}
@@ -49,7 +36,7 @@ layout: null
         <div class="header-content-main">
             <div id="domainAvatar" class="domain-avatar-main"></div>
             <div class="header-text">
-                <h1 id="postTitle" class="blog-title-main">{{ page.title }}</h1>
+                <h1 id="postTitle" class="blog-title-main" title="{{ page.title | escape }}">{{ page.title }}</h1>
                 <div id="domainSub" class="domain-sub"></div>
             </div>
             <button class="menu-btn-main" id="blogMenuToggle" title="Menu" aria-label="Menu">
@@ -147,6 +134,103 @@ layout: null
         }
         function genC(o,s,l) { return hslToHex((hue+o)%360, s, l); }
 
+        var authorName = fullName.split("-").map(function(w){return w.charAt(0).toUpperCase()+w.slice(1);}).join(" ");
+
+        // ========== SCHEMA ==========
+
+        // 1. Article
+        var articleSchema = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "{{ page.title | escape }}",
+            "description": "{{ page.description | default: page.title | escape }}",
+            "url": "{{ page.url | absolute_url }}",
+            "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
+            "dateModified": "{{ page.last_modified_at | default: page.date | date: '%Y-%m-%d' }}",
+            "author": { "@type": "Organization", "name": authorName },
+            "publisher": { "@type": "Organization", "name": authorName }
+            {% if page.image %},"image": "{{ page.image | absolute_url }}"{% endif %}
+        };
+        var s1 = document.createElement("script"); s1.type = "application/ld+json"; s1.textContent = JSON.stringify(articleSchema); document.head.appendChild(s1);
+
+        // 2. BreadcrumbList - support ul > li > a
+        var breadcrumbItems = [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site.url }}" }];
+        var spoEl = document.querySelector(".excerpt.spo");
+        var position = 2;
+        if (spoEl) {
+            var links = spoEl.querySelectorAll("a");
+            links.forEach(function(link) {
+                var text = link.textContent.trim();
+                if (text.length > 0) {
+                    breadcrumbItems.push({ "@type": "ListItem", "position": position, "name": text, "item": link.href });
+                    position++;
+                }
+            });
+        }
+        breadcrumbItems.push({ "@type": "ListItem", "position": position, "name": "{{ page.title | escape }}", "item": "{{ page.url | absolute_url }}" });
+        var breadcrumbSchema = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": breadcrumbItems };
+        var s2 = document.createElement("script"); s2.type = "application/ld+json"; s2.textContent = JSON.stringify(breadcrumbSchema); document.head.appendChild(s2);
+
+        // 3. NewsArticle
+        var newsSchema = {
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": "{{ page.title | escape }}",
+            "description": "{{ page.description | default: page.title | escape }}",
+            "url": "{{ page.url | absolute_url }}",
+            "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
+            "author": { "@type": "Organization", "name": authorName },
+            "publisher": { "@type": "Organization", "name": authorName }
+            {% if page.image %},"image": "{{ page.image | absolute_url }}"{% endif %}
+        };
+        var s3 = document.createElement("script"); s3.type = "application/ld+json"; s3.textContent = JSON.stringify(newsSchema); document.head.appendChild(s3);
+
+        // 4. ImageObject
+        {% if page.image %}
+        var imgSchema = {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "name": "{{ page.title | escape }}",
+            "description": "{{ page.description | default: page.title | escape }}",
+            "contentUrl": "{{ page.image | absolute_url }}",
+            "thumbnailUrl": "{{ page.image | absolute_url }}"
+        };
+        var s4 = document.createElement("script"); s4.type = "application/ld+json"; s4.textContent = JSON.stringify(imgSchema); document.head.appendChild(s4);
+        {% endif %}
+
+        // 5. AggregateRating - deterministik
+        function SeededRandom(seed) { this.seed = seed; this.next = function() { this.seed = (this.seed * 1103515245 + 12345) & 0x7fffffff; return this.seed / 0x7fffffff; }; }
+        var rng = new SeededRandom(domainHash);
+        var ratingValue = (3.5 + rng.next() * 1.5).toFixed(1);
+        var reviewCount = Math.floor(50 + rng.next() * 450);
+        var ratingSchema = {
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            "name": "{{ page.title | escape }}",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": ratingValue,
+                "reviewCount": reviewCount,
+                "bestRating": "5"
+            }
+        };
+        var s5 = document.createElement("script"); s5.type = "application/ld+json"; s5.textContent = JSON.stringify(ratingSchema); document.head.appendChild(s5);
+
+        // 6. DiscussionForumPosting
+        var forumSchema = {
+            "@context": "https://schema.org",
+            "@type": "DiscussionForumPosting",
+            "headline": "{{ page.title | escape }} - Travel Discussion",
+            "description": "Join the discussion about {{ page.title }}. Share your travel experiences, tips, and recommendations.",
+            "url": "{{ page.url | absolute_url }}",
+            "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
+            "author": { "@type": "Organization", "name": authorName },
+            "publisher": { "@type": "Organization", "name": authorName }
+        };
+        var s6 = document.createElement("script"); s6.type = "application/ld+json"; s6.textContent = JSON.stringify(forumSchema); document.head.appendChild(s6);
+
+        // ========== TAMPILAN ==========
+
         var avatarBg = genC(0,60,50);
         var clean = fullName.replace(/-/g," "), words = clean.split(" "), initials = "";
         for (var w=0; w<Math.min(words.length,3); w++) { if(words[w].length>0) initials += words[w].charAt(0).toUpperCase(); }
@@ -161,16 +245,47 @@ layout: null
         var mb = document.getElementById("blogMenuToggle"); if(mb) mb.style.color = htxt;
         document.querySelectorAll(".menu-icon-main").forEach(function(i){ i.style.stroke = htxt; });
         document.body.style.background = genC(0,8,97);
-        document.body.style.fontFamily = ["'Segoe UI',sans-serif","'Inter',sans-serif","-apple-system,sans-serif","'Noto Sans',sans-serif"][domainHash%4];
+        
+        var fonts = ["'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,sans-serif","'Inter',-apple-system,BlinkMacSystemFont,Roboto,sans-serif","-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif","'Noto Sans',-apple-system,BlinkMacSystemFont,Roboto,sans-serif","'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Roboto,sans-serif","'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"];
+        document.body.style.fontFamily = fonts[domainHash % 6];
 
-        var pc = document.querySelector(".post-content");
-        if(pc) { var bg=genC(30,60,55), txt=textColorFor(bg); pc.style.background=bg; pc.style.color=txt; pc.querySelectorAll("a").forEach(function(a){a.style.color=genC(0,70,60);}); }
+        var hh = (hue + 30) % 360;
+        document.querySelectorAll(".post-content h2").forEach(function(h,i){h.style.color=genC((hh+i*15)%360,65,50);h.style.borderLeft="3px solid "+genC((hh+i*15)%360,70,55);h.style.paddingLeft="10px";});
+        document.querySelectorAll(".post-content h3").forEach(function(h,i){h.style.color=genC((hh+60+i*20)%360,55,55);});
+        document.querySelectorAll(".post-content h4").forEach(function(h,i){h.style.color=genC((hh+120+i*20)%360,50,50);});
 
-        var rs = document.querySelector(".related-section");
-        if(rs) { var rbg=genC(90,50,65), rtxt=textColorFor(rbg); rs.style.background=rbg; rs.style.color=rtxt; rs.style.padding="16px"; rs.style.borderRadius="10px"; rs.style.marginTop="1rem"; rs.querySelectorAll("a").forEach(function(a){a.style.color=rtxt;}); }
+        var fi = document.querySelector(".featured-img-wrap");
+        if(fi){var il=["img-full","img-card","img-rounded"];fi.classList.add(il[domainHash%3]);}
+        var pc = document.querySelector(".post-container");
+        if(pc){var ww=["850px","100%","750px"];pc.style.maxWidth=ww[domainHash%3];}
+        var pct = document.querySelector(".post-content");
+        if(pct){
+            var bg=genC(30,60,55),txt=textColorFor(bg),cs=["content-card","content-flat","content-gradient"],cst=cs[domainHash%3];
+            pct.classList.add(cst);
+            if(cst==="content-card"){pct.style.background=bg;pct.style.color=txt;pct.style.borderRadius="10px";pct.style.padding="1.25rem";pct.querySelectorAll("a").forEach(function(a){a.style.color=genC(0,70,60);});applyDarkTable(pct);applyDarkDetails(pct,bg);}
+            else if(cst==="content-flat"){pct.style.background="transparent";pct.style.color="#111";pct.style.padding="0.5rem 0";pct.querySelectorAll("a").forEach(function(a){a.style.color=genC(0,70,50);});applyFlatTable(pct);applyFlatDetails(pct);}
+            else if(cst==="content-gradient"){var gbg="linear-gradient(135deg, "+genC(30,50,60)+", "+genC(60,40,70)+")";pct.style.background=gbg;pct.style.color="#fff";pct.style.borderRadius="10px";pct.style.padding="1.25rem";pct.querySelectorAll("a").forEach(function(a){a.style.color=genC(0,80,80);});applyDarkTable(pct);applyDarkDetails(pct,genC(30,50,60));}
+        }
+        function applyDarkTable(c){c.querySelectorAll("table").forEach(function(t){wrapTable(t);t.querySelectorAll("th").forEach(function(th){th.style.borderBottom="2px solid rgba(255,255,255,0.2)";});t.querySelectorAll("td").forEach(function(td){td.style.borderBottom="1px solid rgba(255,255,255,0.08)";});});}
+        function applyFlatTable(c){c.querySelectorAll("table").forEach(function(t){wrapTable(t);t.style.border="1px solid #ddd";t.querySelectorAll("th").forEach(function(th){th.style.background="#f5f5f5";th.style.color="#111";th.style.borderBottom="2px solid #ddd";});t.querySelectorAll("td").forEach(function(td){td.style.borderBottom="1px solid #eee";td.style.color="#333";});});}
+        function wrapTable(table){if(!table.parentElement.classList.contains("table-wrap")){var wrap=document.createElement("div");wrap.className="table-wrap";table.parentNode.insertBefore(wrap,table);wrap.appendChild(table);}}
+        function applyDarkDetails(c,bg){c.querySelectorAll("details").forEach(function(d){d.style.background=bg;d.style.border="1px solid rgba(255,255,255,0.1)";d.style.borderRadius="6px";d.querySelectorAll("summary").forEach(function(s){s.style.padding="0.5rem 0.75rem";s.style.fontWeight="600";s.style.fontSize="0.85rem";s.style.cursor="pointer";s.style.listStyle="none";s.style.display="flex";s.style.alignItems="center";s.style.gap="0.4rem";});wrapDetailsContent(d);});}
+        function applyFlatDetails(c){c.querySelectorAll("details").forEach(function(d){d.style.border="1px solid #e0e0e0";d.style.borderRadius="6px";d.style.background="#fafafa";d.querySelectorAll("summary").forEach(function(s){s.style.padding="0.5rem 0.75rem";s.style.fontWeight="600";s.style.fontSize="0.85rem";s.style.cursor="pointer";s.style.listStyle="none";s.style.display="flex";s.style.alignItems="center";s.style.gap="0.4rem";s.style.background="#f5f5f5";});wrapDetailsContent(d);});}
+        function wrapDetailsContent(details){var summary=details.querySelector("summary");if(!summary)return;var wrapper=details.querySelector(".details-content");if(!wrapper){wrapper=document.createElement("div");wrapper.className="details-content";wrapper.style.padding="0.5rem 0.75rem 0.75rem 1.5rem";var children=Array.from(details.children);children.forEach(function(child){if(child!==summary&&!child.classList.contains("details-content")){wrapper.appendChild(child);}});summary.after(wrapper);}}
+        var arrowSVG="<svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" style=\"flex-shrink:0;transition:transform 0.2s;\"><polyline points=\"9 18 15 12 9 6\"/></svg>";
+        document.querySelectorAll(".post-content details summary").forEach(function(sum){if(!sum.querySelector("svg")){sum.insertAdjacentHTML("afterbegin",arrowSVG);}});
 
-        var fp = document.getElementById("footerPara");
-        if(fp) { var fbg=genC(180,20,22), ftxt=textColorFor(fbg); fp.style.background=fbg; fp.style.color=ftxt; fp.style.padding="14px 16px"; fp.style.borderRadius="10px"; fp.style.marginTop="1rem"; }
+        var rg=document.querySelector(".related-grid");
+        if(rg){var rl=["rel-grid-3","rel-grid-2","rel-list"];rg.classList.add(rl[domainHash%3]);}
+
+        var fp=document.getElementById("footerPara");
+        if(fp){var fs=["footer-centered","footer-left","footer-bar"],fst=fs[domainHash%3];fp.classList.add(fst);var fbg=genC(180,20,22),ftxt=textColorFor(fbg);
+            if(fst==="footer-centered"){fp.style.background=fbg;fp.style.color=ftxt;fp.style.textAlign="center";fp.style.padding="14px 16px";fp.style.borderRadius="10px";}
+            else if(fst==="footer-left"){fp.style.background="transparent";fp.style.color="#555";fp.style.textAlign="left";fp.style.padding="10px 0";fp.style.fontSize="0.7rem";}
+            else if(fst==="footer-bar"){fp.style.background=fbg;fp.style.color=ftxt;fp.style.textAlign="center";fp.style.padding="12px";fp.style.borderRadius="0";fp.style.marginLeft="-0.75rem";fp.style.marginRight="-0.75rem";fp.style.width="calc(100% + 1.5rem)";}}
+
+        var rs=document.querySelector(".related-section");
+        if(rs){var rbg=genC(90,50,65),rtxt=textColorFor(rbg);rs.style.background=rbg;rs.style.color=rtxt;rs.style.padding="16px";rs.style.borderRadius="10px";rs.querySelectorAll("a").forEach(function(a){a.style.color=rtxt;});rs.querySelectorAll(".related-card").forEach(function(card){card.style.background=genC(90,30,70);});}
     })();
     </script>
 
@@ -180,7 +295,7 @@ layout: null
         .header-content-main{display:flex;align-items:center;gap:10px;width:100%;max-width:1000px;margin:0 auto;}
         .domain-avatar-main{flex-shrink:0;line-height:0;}
         .header-text{flex:1;min-width:0;}
-        .blog-title-main{font-size:0.9rem;font-weight:700;line-height:1.25;white-space:normal;word-break:break-word;}
+        .blog-title-main{font-size:0.85rem;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
         .domain-sub{font-size:0.6rem;line-height:1.2;margin-top:1px;}
         .menu-btn-main{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:transparent;border:none;cursor:pointer;flex-shrink:0;}
         .menu-btn-main:hover{opacity:0.6;}
@@ -192,17 +307,46 @@ layout: null
         .header-spacer{height:50px;}
         .post-container{max-width:850px;margin:0 auto;padding:0.75rem;}
 
-        .post-content{padding:1.25rem;border-radius:10px;line-height:1.65;font-size:0.9rem;margin-bottom:1rem;}
-        .post-content img{max-width:100%;height:auto;border-radius:6px;margin:1rem 0;}
-        .post-content h2,.post-content h3,.post-content h4{margin:1rem 0 0.5rem;line-height:1.3;font-size:1.1rem;}
+        .featured-img-wrap{width:100%;overflow:hidden;margin-bottom:0.75rem;}
+        .featured-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+        .featured-img-wrap.img-full{border-radius:0;aspect-ratio:16/9;}
+        .featured-img-wrap.img-full img{border-radius:0;}
+        .featured-img-wrap.img-card{border-radius:10px;aspect-ratio:16/9;}
+        .featured-img-wrap.img-rounded{border-radius:20px;aspect-ratio:16/9;}
+
+        .post-content{line-height:1.65;font-size:0.9rem;margin-bottom:1rem;}
+        .post-content img{max-width:100%;height:auto;border-radius:6px;margin:1rem 0;aspect-ratio:16/9;object-fit:cover;}
+        .post-content h2,.post-content h3,.post-content h4{margin:1rem 0 0.5rem;line-height:1.3;}
+        .post-content h2{font-size:1.15rem;}
+        .post-content h3{font-size:1.05rem;}
+        .post-content h4{font-size:0.95rem;}
         .post-content p{margin-bottom:0.75rem;}
         .post-content a{text-decoration:underline;}
-        .post-content ul,.post-content ol{margin:0.5rem 0;padding-left:1.25rem;}
         .post-content blockquote{border-left:3px solid;padding:0.25rem 0.75rem;margin:0.75rem 0;opacity:0.85;}
+
+        .post-content table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.8rem;overflow:hidden;border-radius:6px;}
+        .post-content table th,.post-content table td{padding:0.5rem 0.6rem;text-align:left;}
+        .post-content table thead{font-weight:700;}
+        .post-content table tbody tr:hover{background:rgba(255,255,255,0.05);}
+        .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1rem 0;border-radius:6px;}
+        .table-wrap table{min-width:600px;margin:0;}
+
+        .post-content ul,.post-content ol{margin:0.5rem 0;padding-left:1.25rem;line-height:1.6;}
+        .post-content ul li,.post-content ol li{margin-bottom:0.3rem;padding-left:0.2rem;}
+        .post-content ul ul,.post-content ol ol,.post-content ul ol,.post-content ol ul{margin:0.25rem 0;}
+
+        .post-content details{margin:0.75rem 0;overflow:hidden;}
+        .post-content details summary::-webkit-details-marker{display:none;}
+        .post-content details[open] > summary svg{transform:rotate(90deg);}
 
         .related-section{margin-top:0;}
         .related-section h3{font-size:0.95rem;font-weight:700;margin-bottom:0.6rem;}
-        .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;}
+        .related-grid{display:grid;gap:0.6rem;}
+        .related-grid.rel-grid-3{grid-template-columns:repeat(3,1fr);}
+        .related-grid.rel-grid-2{grid-template-columns:repeat(2,1fr);}
+        .related-grid.rel-list{grid-template-columns:1fr;}
+        .related-grid.rel-list .related-card{display:flex;gap:0.6rem;}
+        .related-grid.rel-list .related-card-img{width:100px;flex-shrink:0;}
         .related-card{display:block;text-decoration:none;border-radius:8px;overflow:hidden;transition:all 0.15s;}
         .related-card:hover{opacity:0.9;transform:translateY(-2px);}
         .related-card-img{width:100%;aspect-ratio:16/9;overflow:hidden;}
@@ -217,20 +361,23 @@ layout: null
             .header-spacer{height:55px;}
         }
         @media(max-width:768px){
-            .post-container{padding:0.5rem;}.post-content{padding:1rem;}.related-grid{grid-template-columns:repeat(2,1fr);}
+            .post-container{padding:0.5rem;}
+            .related-grid.rel-grid-3{grid-template-columns:repeat(2,1fr);}
             .header-spacer{height:48px;}
         }
         @media(max-width:480px){
-            .related-grid{grid-template-columns:1fr;}
+            .related-grid.rel-grid-3,.related-grid.rel-grid-2{grid-template-columns:1fr;}
+            .related-grid.rel-list .related-card{flex-direction:column;}
+            .related-grid.rel-list .related-card-img{width:100%;}
         }
     </style>
 
     <div class="header-spacer"></div>
     <div class="post-container">
-
+<br /><br />
         {% if page.image %}
-        <div style="width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;margin-bottom:0.75rem;">
-            <img src="{{ page.image }}" alt="{{ page.title }}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+        <div class="featured-img-wrap">
+            <img src="{{ page.image }}" alt="{{ page.title }}" loading="lazy">
         </div>
         {% endif %}
 
@@ -250,7 +397,7 @@ layout: null
                     {% endif %}
                     <div class="related-card-body">
                         <h4>{{ post.title }}</h4>
-                        <p>{{ post.description | truncate: 60 }}</p>
+                        <p>{{ post.description }}</p>
                     </div>
                 </a>
                 {% endfor %}
