@@ -15,229 +15,181 @@ layout: null
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{
             font-family:system-ui,-apple-system,sans-serif;
-            max-width:750px;
+            max-width:100%;
             margin:0 auto;
-            padding:70px 16px 20px;
-            background:#f5f5f5;
-            color:#1a1a2e;
-            line-height:1.6;
+            padding:70px 8px 20px;
+            background:#0a0a0a;
+            color:#e0e0e0;
+            line-height:1.5;
         }
         
-        /* Header */
         .header{
             display:flex;align-items:center;justify-content:space-between;
-            padding:10px 16px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);
-            position:fixed;top:0;left:0;right:0;z-index:100;
+            padding:10px 16px;background:#111;box-shadow:0 1px 4px rgba(0,0,0,.5);
+            position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid #222
         }
         .header-brand{display:flex;align-items:center;gap:10px;min-width:0}
         .header-svg{width:32px;height:32px;flex-shrink:0}
-        .header-title{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .header-title{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
         .header-btn{
             display:flex;align-items:center;justify-content:center;
             width:34px;height:34px;background:none;border:none;cursor:pointer;
-            border-radius:6px;color:#333
+            border-radius:6px;color:#ccc
         }
-        .header-btn:active{background:rgba(0,0,0,.05)}
+        .header-btn:active{background:rgba(255,255,255,.05)}
         .header-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
         
-        /* Menu */
         .menu{
-            display:none;position:fixed;z-index:99;background:#fff;
-            border:1px solid #e0e0e0;padding:12px;border-radius:8px;
-            box-shadow:0 4px 16px rgba(0,0,0,.1)
+            display:none;position:fixed;z-index:99;background:#1a1a1a;
+            border:1px solid #333;padding:12px;border-radius:8px;
+            box-shadow:0 4px 16px rgba(0,0,0,.5)
         }
-        .menu a{display:block;padding:8px 12px;color:#333;text-decoration:none;border-radius:4px;font-size:13px;font-weight:500}
-        .menu a:active{background:rgba(0,0,0,.05)}
+        .menu a{display:block;padding:8px 12px;color:#ccc;text-decoration:none;border-radius:4px;font-size:13px;font-weight:500}
+        .menu a:active{background:rgba(255,255,255,.05)}
         
-        /* Back button */
         .back-link{
-            display:inline-flex;align-items:center;gap:4px;color:#4a90d9;
+            display:inline-flex;align-items:center;gap:4px;color:#e94560;
             text-decoration:none;font-size:13px;font-weight:500;margin-bottom:16px
         }
-        .back-link:hover{text-decoration:underline}
         .back-link svg{width:16px;height:16px}
         
-        /* Search */
-        .search-wrap{display:flex;gap:6px;margin-bottom:16px}
+        .search-wrap{display:flex;gap:8px;margin-bottom:6px}
         .search-input{
-            flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:6px;
-            font-size:14px;font-family:inherit;outline:none;background:#fff
+            flex:1;padding:10px 14px;border:1px solid #333;border-radius:8px;
+            font-size:14px;font-family:inherit;outline:none;background:#1a1a1a;color:#fff
         }
-        .search-input:focus{border-color:#4a90d9}
+        .search-input:focus{border-color:#e94560}
+        .search-input::placeholder{color:#666}
         .search-btn{
-            padding:8px 16px;background:#4a90d9;color:#fff;border:none;
-            border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap
+            padding:10px 20px;background:#e94560;color:#fff;border:none;
+            border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap
         }
-        .search-btn:active{background:#357abd}
+        .search-btn:active{background:#c0392b}
+        .search-hint{font-size:11px;color:#666;margin-bottom:16px}
         
-        /* Breadcrumb */
-        .breadcrumb{margin-bottom:12px;font-size:12px;color:#999}
-        .breadcrumb a{color:#666;text-decoration:none}
-        .breadcrumb a:hover{color:#4a90d9}
-        .breadcrumb span{color:#333;font-weight:600}
+        .breadcrumb{margin-bottom:12px;font-size:12px;color:#666}
+        .breadcrumb a{color:#888;text-decoration:none}
+        .breadcrumb a:hover{color:#e94560}
+        .breadcrumb span{color:#e0e0e0;font-weight:600}
         
-        /* Filter & Info */
         .filter-bar{
             display:flex;align-items:center;gap:8px;padding:8px 12px;
-            background:#fff;border-radius:6px;margin-bottom:12px;font-size:12px;color:#666
+            background:#1a1a1a;border-radius:8px;margin-bottom:12px;font-size:12px;color:#888
         }
-        .filter-bar a{margin-left:auto;color:#4a90d9;text-decoration:none;font-weight:600}
+        .filter-bar a{margin-left:auto;color:#e94560;text-decoration:none;font-weight:600}
         .info-msg{
-            padding:8px 12px;background:#fff3cd;border:1px solid #ffc107;
-            border-radius:6px;margin-bottom:12px;font-size:12px;color:#856404
+            padding:8px 12px;background:#2a1a1a;border:1px solid #e94560;
+            border-radius:8px;margin-bottom:12px;font-size:12px;color:#e0a0a0
         }
         
-        /* Headings */
-        h1{font-size:20px;margin-bottom:4px;color:#1a1a2e}
-        .desc{font-size:12px;color:#999;margin-bottom:16px}
+        h1{font-size:20px;margin-bottom:4px;color:#fff}
+        .desc{font-size:12px;color:#888;margin-bottom:16px}
         
-        /* Post Card (list view) */
-        .post{
-            background:#fff;padding:16px;margin-bottom:12px;border-radius:8px;
-            box-shadow:0 1px 3px rgba(0,0,0,.06)
+        .post-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:8px;
         }
-        .post-img{width:100%;height:auto;border-radius:4px;margin-bottom:10px;display:block}
-        .post h2{font-size:17px;margin-bottom:6px}
-        .post h2 a{color:#1a1a2e;text-decoration:none}
-        .post h2 a:hover{color:#4a90d9}
-        .post-meta{font-size:11px;color:#999;margin-bottom:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-        .post-label{display:inline-block;background:#f0f0f0;padding:2px 8px;border-radius:10px;font-size:10px;color:#666;text-decoration:none}
-        .post-label:hover{background:#e0e0e0}
-        .post-snippet{font-size:13px;color:#555;line-height:1.5}
+        @media(min-width:500px){.post-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(min-width:768px){
+            body{max-width:900px;padding-left:12px;padding-right:12px}
+            .post-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+        }
+        @media(min-width:1024px){
+            body{max-width:1100px}
+            .post-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+        }
         
-        /* ============================================ */
-        /* SINGLE POST VIEW */
-        /* ============================================ */
+        .post-card{
+            background:#111;border-radius:8px;overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,.3);transition:transform 0.2s,box-shadow 0.2s;
+            text-decoration:none;display:block;cursor:pointer
+        }
+        .post-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.5)}
+        .post-card-img{
+            width:100%;height:auto;display:block;aspect-ratio:2/3;object-fit:cover
+        }
+        .post-card-info{padding:8px 10px}
+        .post-card-title{
+            font-size:12px;font-weight:600;color:#e0e0e0;line-height:1.3;
+            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+        }
+        .post-card-meta{font-size:10px;color:#888;margin-top:4px}
+        .post-card-label{
+            display:inline-block;background:#1a1a1a;padding:1px 6px;
+            border-radius:8px;font-size:9px;color:#999;text-decoration:none;margin-top:4px
+        }
+        
         .single-post-view{
-            background:#fff;padding:20px;border-radius:8px;
-            box-shadow:0 1px 3px rgba(0,0,0,.06)
+            background:#111;padding:16px;border-radius:8px;
+            box-shadow:0 2px 8px rgba(0,0,0,.3)
         }
         .single-post-view h1.post-title{
-            font-size:22px;line-height:1.3;margin-bottom:12px;color:#1a1a2e
+            font-size:20px;line-height:1.3;margin-bottom:10px;color:#fff
         }
         .single-post-view .post-meta{
-            padding-bottom:12px;border-bottom:1px solid #eee;margin-bottom:16px
+            font-size:11px;color:#888;margin-bottom:12px;padding-bottom:12px;
+            border-bottom:1px solid #222;display:flex;flex-wrap:wrap;gap:6px;align-items:center
         }
         .single-post-view .post-body{
-            font-size:15px;line-height:1.7;color:#333
+            font-size:14px;line-height:1.6;color:#ccc
         }
         .single-post-view .post-body img{
-            max-width:100%;height:auto;border-radius:6px;margin:12px 0;display:block
+            max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block
         }
-        .single-post-view .post-body pre{
-            background:#f5f5f5;padding:12px;border-radius:6px;overflow-x:auto;font-size:13px;margin:12px 0
-        }
-        .single-post-view .post-body code{
-            background:#f0f0f0;padding:2px 6px;border-radius:3px;font-size:13px;color:#333
-        }
-        .single-post-view .post-body pre code{
-            background:none;padding:0;color:#333
-        }
-        .single-post-view .post-body blockquote{
-            border-left:3px solid #4a90d9;padding:8px 12px;margin:12px 0;
-            color:#666;background:#f9f9f9;border-radius:0 4px 4px 0
-        }
-        .single-post-view .post-body a{color:#4a90d9;text-decoration:underline}
-        .single-post-view .post-body a:hover{color:#357abd}
-        .single-post-view .post-body h2,.single-post-view .post-body h3,.single-post-view .post-body h4{
-            margin:20px 0 10px;color:#1a1a2e
-        }
-        .single-post-view .post-body h2{font-size:20px}
-        .single-post-view .post-body h3{font-size:18px}
-        .single-post-view .post-body h4{font-size:16px}
-        .single-post-view .post-body ul,.single-post-view .post-body ol{
-            margin:8px 0 8px 20px
-        }
-        .single-post-view .post-body li{margin:4px 0}
-        .single-post-view .post-body p{margin-bottom:12px}
-        .single-post-view .post-body table{
-            width:100%;border-collapse:collapse;margin:12px 0
-        }
-        .single-post-view .post-body table td,.single-post-view .post-body table th{
-            border:1px solid #ddd;padding:8px;text-align:left
-        }
-        .single-post-view .post-body table th{background:#f5f5f5;font-weight:600}
+        .single-post-view .post-body a{color:#e94560;text-decoration:underline}
         
-        /* Related Posts */
-        .related-section{margin-top:24px}
-        .related-section h3{font-size:16px;margin-bottom:12px;color:#1a1a2e}
-        .related-posts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-        .related-post{
-            background:#fff;padding:10px;border-radius:6px;
-            box-shadow:0 1px 3px rgba(0,0,0,.06);text-decoration:none;display:block
+        .post-label-link{
+            display:inline-block;background:#1a1a1a;padding:2px 8px;
+            border-radius:10px;font-size:10px;color:#999;text-decoration:none
         }
-        .related-post:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
-        .related-post-img{width:100%;height:90px;object-fit:cover;border-radius:4px;margin-bottom:8px;display:block}
-        .related-post-title{font-size:12px;font-weight:600;color:#1a1a2e;line-height:1.3;display:block}
+        .post-label-link:hover{background:#333;color:#fff}
         
-        /* Pagination */
+        .related-section{margin-top:20px}
+        .related-section h3{font-size:15px;margin-bottom:10px;color:#fff}
+        .related-grid{
+            display:grid;grid-template-columns:repeat(2,1fr);gap:8px
+        }
+        @media(min-width:500px){.related-grid{grid-template-columns:repeat(4,1fr)}}
+        .related-card{
+            background:#1a1a1a;border-radius:6px;overflow:hidden;
+            text-decoration:none;display:block;transition:transform 0.2s
+        }
+        .related-card:hover{transform:translateY(-2px)}
+        .related-card-img{
+            width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;display:block
+        }
+        .related-card-title{
+            font-size:10px;font-weight:600;color:#ccc;padding:6px 8px;
+            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+        }
+        
         .pagination{display:flex;justify-content:center;gap:6px;margin-top:20px}
         .pagination a,.pagination span{
             display:inline-flex;align-items:center;justify-content:center;
             min-width:32px;height:32px;padding:0 8px;border-radius:6px;
             font-size:13px;text-decoration:none
         }
-        .pagination a{background:#f0f0f0;color:#555}
-        .pagination a:active{background:#ddd}
-        .pagination .current{background:#4a90d9;color:#fff;font-weight:700}
-        .pagination .disabled{opacity:.3;pointer-events:none;background:#f5f5f5}
+        .pagination a{background:#1a1a1a;color:#ccc}
+        .pagination a:active{background:#333}
+        .pagination .current{background:#e94560;color:#fff;font-weight:700}
+        .pagination .disabled{opacity:.3;pointer-events:none;background:#111}
         
-        /* States */
-        .loading,.error,.empty{text-align:center;padding:40px 20px;color:#999;font-size:14px}
-        .error{color:#c0392b}
+        .loading,.error,.empty{text-align:center;padding:40px 20px;color:#888;font-size:14px}
+        .error{color:#e94560}
         
-        footer{margin-top:32px;padding-top:16px;border-top:1px solid #eee;text-align:center;font-size:11px;color:#999}
-        
-        @media(max-width:480px){
-            .single-post-view{padding:14px}
-            .single-post-view h1.post-title{font-size:19px}
-            .single-post-view .post-body{font-size:14px}
-            .related-posts{grid-template-columns:repeat(2,1fr);gap:8px}
-        }
-        
-        /* Dark mode */
-        @media(prefers-color-scheme:dark){
-            body{background:#1a1a1a;color:#e0e0e0}
-            .header,.menu,.post,.filter-bar,.single-post-view{background:#2d2d2d}
-            .header{border-bottom:1px solid #444}
-            .header-btn{color:#ccc}
-            .menu{border-color:#444}
-            .menu a{color:#ccc}
-            .search-input{background:#2d2d2d;border-color:#444;color:#e0e0e0}
-            h1,.single-post-view h1.post-title,.related-section h3{color:#e0e0e0}
-            .post h2 a{color:#e0e0e0}
-            .post-snippet{color:#bbb}
-            .post-label{background:#3d3d3d;color:#bbb}
-            .post-label:hover{background:#555}
-            .pagination a{background:#333;color:#bbb}
-            .breadcrumb span,.filter-bar{color:#bbb}
-            .info-msg{background:#3d3520;border-color:#665500;color:#e0c860}
-            
-            .single-post-view .post-body{color:#ccc}
-            .single-post-view .post-body pre{background:#333}
-            .single-post-view .post-body code{background:#444;color:#ddd}
-            .single-post-view .post-body pre code{background:none;color:#ddd}
-            .single-post-view .post-body blockquote{color:#bbb;background:#333}
-            .single-post-view .post-body h2,.single-post-view .post-body h3,.single-post-view .post-body h4{color:#e0e0e0}
-            .single-post-view .post-body table td,.single-post-view .post-body table th{border-color:#444}
-            .single-post-view .post-body table th{background:#333}
-            .single-post-view .post-meta{border-bottom-color:#444}
-            
-            .related-post{background:#2d2d2d}
-            .related-post-title{color:#e0e0e0}
-            footer{border-color:#333}
-        }
+        footer{margin-top:32px;padding-top:16px;border-top:1px solid #222;text-align:center;font-size:11px;color:#666}
+        .count-bar{font-size:11px;color:#666;margin-bottom:12px}
     </style>
     {% include head.html %}
     {% include verif.html %}
 </head>
 <body>
-<div loading="lazy">
-    <!-- HEADER -->
+
     <header class="header">
         <div class="header-brand">
             <svg class="header-svg" viewBox="0 0 100 100" aria-hidden="true">
-                <rect x="8" y="8" width="84" height="84" rx="16" fill="#4a90d9"/>
+                <rect x="8" y="8" width="84" height="84" rx="16" fill="#e94560"/>
                 <text id="brandSvgText" x="50" y="65" text-anchor="middle" fill="#fff" font-size="40" font-weight="700" font-family="system-ui">A</text>
             </svg>
             <span class="header-title" id="blogTitle"></span>
@@ -248,7 +200,6 @@ layout: null
         </button>
     </header>
 
-    <!-- MENU -->
     <nav class="menu" id="menuPanel">
         <a href="/">Home</a>
         <a href="/contact/">Contact</a>
@@ -256,28 +207,23 @@ layout: null
         <a href="/terms-and-conditions/">Terms &amp; Conditions</a>
     </nav>
 
-    <!-- BACK BUTTON -->
     <a class="back-link" id="backLink" style="display:none" href="/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to posts
+        Back
     </a>
 
-    <!-- BREADCRUMB -->
-    <div class="breadcrumb" id="breadcrumb">
-        <a href="/">Home</a>
-    </div>
+    <div class="breadcrumb" id="breadcrumb"><a href="/">Home</a></div>
 
-    <!-- SEARCH -->
     <form class="search-wrap" id="searchForm" action="/" method="get">
-        <input class="search-input" type="search" name="label" placeholder="Search label..." aria-label="Search by label">
+        <input class="search-input" type="search" name="label" id="searchInput" placeholder="Search name..." aria-label="Search">
         <button class="search-btn" type="submit">Search</button>
     </form>
+    <p class="search-hint" id="searchHint">Try: name leaked</p>
 
-    <!-- MAIN -->
     <h1 id="pageHeading">Loading...</h1>
     <p class="desc" id="siteDesc"></p>
     <div class="filter-bar" id="filterBar" style="display:none"></div>
-    <div id="mainContent"><p class="loading">Loading posts...</p></div>
+    <div id="mainContent"><p class="loading">Loading...</p></div>
     <div class="pagination" id="pagination"></div>
 
     <footer>{% include footer.html %}</footer>
@@ -286,18 +232,16 @@ layout: null
     (function(){
         const $ = id => document.getElementById(id);
         
-        // Domain info
         const host = location.hostname;
         const parts = host.split('.');
         let displayName = parts[0];
         if(parts.length>2&&parts[0]==='www') displayName = parts[1];
         displayName = displayName.replace(/[\.-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
         
-        const letters = displayName.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3)||'B';
+        const letters = displayName.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3)||'G';
         $('brandSvgText').textContent = letters;
         $('blogTitle').textContent = displayName;
         
-        // Menu toggle
         const menu = $('menuPanel');
         const iconM = $('iconMenu');
         const iconC = $('iconClose');
@@ -323,21 +267,26 @@ layout: null
             }
         };
         
-        // URL params
         const p = new URLSearchParams(location.search);
         const LABEL = p.get('label')||'';
         const POST_SLUG = p.get('p')||'';
-        const MAX = parseInt(p.get('max-results'))||15;
+        const MAX = parseInt(p.get('max-results'))||24;
         const START = parseInt(p.get('start-index'))||1;
         const BID = p.get('blogid')||'3878198361264397837';
         
         $('canonicalUrl').href = location.href;
         
-        // Helpers
         function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
         function hd(u){return u&&u.includes('googleusercontent.com')?u.replace(/\/s\d+(-c)?\//,'/s1600/'):u}
         function strip(h){if(!h)return'';const d=document.createElement('div');d.innerHTML=h;return(d.textContent||'').replace(/\s+/g,' ').trim()}
         function fd(d){try{return new Date(d).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}catch(e){return d}}
+        
+        // Alt text = judul + semua label
+        function altText(title, categories){
+            const parts = [title];
+            if(categories && categories.length) parts.push(categories.join(', '));
+            return parts.filter(Boolean).join(' - ');
+        }
         
         const base = host.includes('blogspot.com')?
             'https://'+host+'/feeds/posts/default':
@@ -348,13 +297,13 @@ layout: null
         // ============================================
         if(POST_SLUG){
             $('searchForm').style.display = 'none';
+            $('searchHint').style.display = 'none';
             $('backLink').style.display = 'inline-flex';
             if(document.referrer && document.referrer.includes(host)){
                 $('backLink').href = document.referrer;
             }
             $('pagination').style.display = 'none';
             
-            // Ambil beberapa postingan terbaru untuk mencari slug yang cocok
             const feedUrl = base+'?alt=json-in-script&callback=sp&max-results=50';
             
             window.sp = function(data){
@@ -367,8 +316,6 @@ layout: null
                 }
                 
                 const entries = Array.isArray(feed.entry)?feed.entry:[feed.entry];
-                
-                // Cari postingan dengan slug yang cocok
                 const post = entries.find(e=>{
                     const link = (e.link||[]).find(l=>l.rel==='alternate')?.href||'';
                     const slug = link.split('/').pop().replace('.html','');
@@ -376,52 +323,61 @@ layout: null
                 });
                 
                 if(!post){
-                    container.innerHTML = '<p class="error">Post not found. <a href="/">Back to home</a></p>';
+                    container.innerHTML = '<p class="error">Post not found. <a href="/" style="color:#e94560">Back to home</a></p>';
                     return;
                 }
                 
-                renderSinglePost(post, entries);
-            };
-            
-            function renderSinglePost(post, allEntries){
-                const container = $('mainContent');
                 const title = post.title?.$t||'Untitled';
                 const date = fd(post.published?.$t);
                 const content = post.content?.$t||post.summary?.$t||'';
                 const cats = (post.category||[]).map(c=>c.term).filter(Boolean);
                 const author = post.author?.[0]?.name?.$t||'';
+                const imgAlt = altText(title, cats);
                 
-                // IDENTITAS HALAMAN = JUDUL POST
-                document.title = title + ' — ' + displayName;
+                let seoTitle = title;
+                const leakedTerms = ['leaked','leak','viral','terbaru','exclusive','hot'];
+                const hasLeakedTerm = leakedTerms.some(t=>title.toLowerCase().includes(t));
+                if(!hasLeakedTerm && cats.some(c=>leakedTerms.some(t=>c.toLowerCase().includes(t)))){
+                    seoTitle = title + ' Leaked Photos';
+                }
+                
+                document.title = seoTitle + ' — ' + displayName;
                 $('pageHeading').textContent = title;
-                $('siteDesc').textContent = strip(content).substring(0,160);
+                $('siteDesc').textContent = 'View photos of ' + title + ' on ' + displayName + '.';
                 
                 const md = document.querySelector('meta[name="description"]')||document.createElement('meta');
                 md.name = 'description';
-                md.content = strip(content).substring(0,160);
+                md.content = 'View latest photos and updates of ' + title + ' on ' + displayName + '.';
                 if(!md.parentNode) document.head.appendChild(md);
                 
-                // Breadcrumb
                 let breadHtml = '<a href="/">Home</a>';
                 if(cats.length){
-                    breadHtml += ' &rsaquo; ' + cats.map(c=>
+                    breadHtml += ' &rsaquo; ' + cats.slice(0,3).map(c=>
                         '<a href="/?label='+encodeURIComponent(c)+'">'+esc(c)+'</a>'
                     ).join(', ');
                 }
                 breadHtml += ' &rsaquo; <span>'+esc(title)+'</span>';
                 $('breadcrumb').innerHTML = breadHtml;
                 
-                // Render single post
+                // Single post render dengan alt gambar dari konten
                 let html = '<article class="single-post-view">';
                 html += '<h1 class="post-title">'+esc(title)+'</h1>';
                 html += '<div class="post-meta">';
-                if(author) html += '<span>By '+esc(author)+'</span>';
+                if(author) html += '<span>'+esc(author)+'</span>';
                 if(date) html += '<time datetime="'+(post.published?.$t||'')+'">'+date+'</time>';
                 if(cats.length) html += cats.map(c=>
-                    '<a href="/?label='+encodeURIComponent(c)+'" class="post-label">#'+esc(c)+'</a>'
+                    '<a href="/?label='+encodeURIComponent(c)+'" class="post-label-link">#'+esc(c)+'</a>'
                 ).join('');
                 html += '</div>';
-                html += '<div class="post-body">'+content+'</div>';
+                // Tambahkan alt ke semua gambar di konten
+                let fixedContent = content;
+                fixedContent = fixedContent.replace(/<img([^>]*)alt="([^"]*)"([^>]*)>/gi, function(match, before, oldAlt, after){
+                    return '<img'+before+'alt="'+esc(imgAlt)+'"'+after+'>';
+                });
+                fixedContent = fixedContent.replace(/<img((?:(?!alt=)[^>])*)>/gi, function(match, attrs){
+                    return '<img'+attrs+' alt="'+esc(imgAlt)+'">';
+                });
+                html += '<div class="post-body">'+fixedContent+'</div>';
                 html += '</article>';
                 
                 // Related posts
@@ -434,43 +390,59 @@ layout: null
                 }).slice(0,4);
                 
                 if(relatedPosts.length){
-                    html += '<div class="related-section"><h3>Related Posts</h3><div class="related-posts">';
+                    html += '<div class="related-section"><h3>More Photos</h3><div class="related-grid">';
                     relatedPosts.forEach(e=>{
                         const t = e.title?.$t||'Untitled';
                         const link = (e.link||[]).find(l=>l.rel==='alternate')?.href||'#';
                         const slug = link.split('/').pop().replace('.html','');
                         const thumb = hd(e.media$thumbnail?.url);
                         const relUrl = '/?p='+slug+(BID!=='3878198361264397837'?'&blogid='+BID:'');
+                        const eCats = (e.category||[]).map(c=>c.term).filter(Boolean);
+                        const relAlt = altText(t, eCats);
                         
-                        html += '<a href="'+relUrl+'" class="related-post">';
-                        if(thumb) html += '<img class="related-post-img" src="'+thumb+'" alt="'+esc(t)+'" loading="lazy" onerror="this.style.display=\'none\'">';
-                        html += '<span class="related-post-title">'+esc(t)+'</span></a>';
+                        html += '<a href="'+relUrl+'" class="related-card">';
+                        if(thumb) html += '<img class="related-card-img" src="'+thumb+'" alt="'+esc(relAlt)+'" loading="lazy" onerror="this.style.display=\'none\'">';
+                        html += '<span class="related-card-title">'+esc(t)+'</span></a>';
                     });
                     html += '</div></div>';
                 }
                 
                 container.innerHTML = html;
                 $('pagination').innerHTML = '';
-            }
+            };
             
             const s = document.createElement('script');
             s.src = feedUrl;
             s.async = true;
-            s.onerror = ()=>$('mainContent').innerHTML='<p class="error">Failed to load post.</p>';
+            s.onerror = ()=>$('mainContent').innerHTML='<p class="error">Failed to load.</p>';
             document.head.appendChild(s);
             return;
         }
         
         // ============================================
-        // LIST MODE
+        // GRID/LIST MODE
         // ============================================
         
-        const si = document.querySelector('.search-input');
+        const si = $('searchInput');
         if(si && LABEL) si.value = LABEL;
         
         if(LABEL){
-            const pageTitle = LABEL + ' — ' + displayName;
-            const pageDesc = 'Posts and articles about ' + LABEL + ' on ' + displayName + '.';
+            $('searchHint').textContent = 'Showing results for: ' + LABEL;
+        } else {
+            $('searchHint').textContent = 'Try: name leaked, viral, terbaru';
+        }
+        
+        if(LABEL){
+            const isLeakedQuery = /leak|viral|terbaru|exclusive|hot/i.test(LABEL);
+            let pageTitle, pageDesc;
+            
+            if(isLeakedQuery){
+                pageTitle = LABEL + ' Photos — ' + displayName;
+                pageDesc = 'View ' + LABEL + ' photos and updates on ' + displayName + '. Latest collection.';
+            } else {
+                pageTitle = LABEL + ' Leaked Photos & Updates — ' + displayName;
+                pageDesc = 'View latest ' + LABEL + ' leaked photos, viral content, and updates on ' + displayName + '.';
+            }
             
             document.title = pageTitle;
             $('pageHeading').textContent = LABEL;
@@ -482,16 +454,16 @@ layout: null
             document.head.appendChild(md);
             
             $('filterBar').style.display = 'flex';
-            $('filterBar').innerHTML = 'Browsing: <strong>'+esc(LABEL)+'</strong> <a href="/">Clear</a>';
+            $('filterBar').innerHTML = 'Category: <strong>'+esc(LABEL)+'</strong> <a href="/">Clear</a>';
             $('breadcrumb').innerHTML = '<a href="/">Home</a> &rsaquo; <span>'+esc(LABEL)+'</span>';
         } else {
-            document.title = displayName + ' — Blog';
+            document.title = displayName + ' — Photo Collection';
             $('pageHeading').textContent = displayName;
-            $('siteDesc').textContent = 'Collection of articles and notes.';
+            $('siteDesc').textContent = 'Latest photo collection and updates.';
             
             const md = document.createElement('meta');
             md.name = 'description';
-            md.content = 'Collection of articles and notes from ' + displayName + '.';
+            md.content = 'Latest photo collection, viral content, and updates on ' + displayName + '.';
             document.head.appendChild(md);
         }
         
@@ -544,7 +516,7 @@ layout: null
                 const entries = Array.isArray(feed.entry)?feed.entry:[feed.entry];
                 const hasMatchingLabel = entries.some(e=>{
                     const cats = (e.category||[]).map(c=>c.term.toLowerCase());
-                    return cats.includes(LABEL.toLowerCase());
+                    return cats.some(c=>c.includes(LABEL.toLowerCase()) || LABEL.toLowerCase().includes(c));
                 });
                 
                 if(!hasMatchingLabel){
@@ -552,19 +524,21 @@ layout: null
                     
                     const infoBar = document.createElement('div');
                     infoBar.className = 'info-msg';
-                    infoBar.innerHTML = 'No posts tagged "<strong>'+esc(LABEL)+'</strong>". Showing latest posts instead.';
+                    infoBar.innerHTML = 'No results for "<strong>'+esc(LABEL)+'</strong>". Showing latest posts instead.';
                     container.parentNode.insertBefore(infoBar, container);
                     
                     $('filterBar').style.display = 'none';
-                    $('breadcrumb').innerHTML = '<a href="/">Home</a> &rsaquo; <span>'+esc(LABEL)+'</span> &rsaquo; <span>Latest Posts</span>';
+                    $('breadcrumb').innerHTML = '<a href="/">Home</a> &rsaquo; <span>'+esc(LABEL)+'</span>';
                 }
             }
             
             const entries = Array.isArray(feed.entry)?feed.entry:[feed.entry];
             const total = parseInt(feed.openSearch$totalResults?.$t)||entries.length;
             
-            let html = '<p style="font-size:12px;color:#999;margin-bottom:12px">Showing '+
+            let html = '<p class="count-bar">Showing '+
                 START+'-'+(START+entries.length-1)+' of '+total+' posts</p>';
+            
+            html += '<div class="post-grid">';
             
             for(let i=0;i<entries.length;i++){
                 const e = entries[i];
@@ -577,20 +551,24 @@ layout: null
                     const i=d.querySelector('img');return i?hd(i.src):null;
                 })(content);
                 const cats = (e.category||[]).map(c=>c.term).filter(Boolean);
-                const snippet = strip(content).substring(0,150)+'...';
+                const imgAlt = altText(t, cats);
                 
-                html += '<article class="post">';
-                if(thumb) html += '<a href="'+link+'"><img class="post-img" src="'+thumb+
-                    '" alt="'+esc(t)+'" loading="lazy" onerror="this.parentElement.remove()"></a>';
-                html += '<h2><a href="'+link+'">'+esc(t)+'</a></h2>';
-                html += '<div class="post-meta">';
-                if(date) html += '<time datetime="'+(e.published?.$t||'')+'">'+date+'</time>';
-                if(cats.length) html += cats.map(c=>
-                    '<a href="/?label='+encodeURIComponent(c)+'" class="post-label">#'+esc(c)+'</a>'
+                html += '<a href="'+link+'" class="post-card">';
+                if(thumb){
+                    html += '<img class="post-card-img" src="'+thumb+'" alt="'+esc(imgAlt)+'" loading="lazy" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%23111%22 width=%22200%22 height=%22300%22/><text fill=%22%23666%22 x=%22100%22 y=%22150%22 text-anchor=%22middle%22 font-size=%2214%22>No Image</text></svg>\'">';
+                } else {
+                    html += '<div style="aspect-ratio:2/3;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#555;font-size:12px">No Image</div>';
+                }
+                html += '<div class="post-card-info">';
+                html += '<span class="post-card-title">'+esc(t)+'</span>';
+                if(date) html += '<div class="post-card-meta">'+date+'</div>';
+                if(cats.length) html += cats.slice(0,2).map(c=>
+                    '<span class="post-card-label">#'+esc(c)+'</span>'
                 ).join('');
-                html += '</div><p class="post-snippet">'+esc(snippet)+'</p></article>';
+                html += '</div></a>';
             }
             
+            html += '</div>';
             container.innerHTML = html;
             
             const pages = Math.ceil(total/MAX);
@@ -603,7 +581,7 @@ layout: null
                 const pp=new URLSearchParams();
                 if(BID!=='3878198361264397837')pp.set('blogid',BID);
                 if(LABEL && !labelMatched)pp.set('label',LABEL);
-                if(MAX!==15)pp.set('max-results',MAX);
+                if(MAX!==24)pp.set('max-results',MAX);
                 if(page>1)pp.set('start-index',(page-1)*MAX+1);
                 const q=pp.toString();return q?'/?'+q:'/';
             }
@@ -632,6 +610,5 @@ layout: null
         document.head.appendChild(s);
     })();
     </script>
-    </div>
 </body>
 </html>
