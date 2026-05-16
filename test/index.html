@@ -47,6 +47,12 @@ layout: null
         .menu a{display:block;padding:8px 12px;color:#ccc;text-decoration:none;border-radius:4px;font-size:13px;font-weight:500}
         .menu a:active{background:rgba(255,255,255,.05)}
         
+        .back-link{
+            display:inline-flex;align-items:center;gap:4px;color:#e94560;
+            text-decoration:none;font-size:13px;font-weight:500;margin-bottom:16px
+        }
+        .back-link svg{width:16px;height:16px}
+        
         .search-wrap{display:flex;gap:8px;margin-bottom:6px}
         .search-input{
             flex:1;padding:10px 14px;border:1px solid #333;border-radius:8px;
@@ -115,6 +121,50 @@ layout: null
         }
         .post-card-label:hover{background:#333;color:#fff}
         
+        .single-post-view{
+            background:#111;padding:16px;border-radius:8px;
+            box-shadow:0 2px 8px rgba(0,0,0,.3)
+        }
+        .single-post-view h1.post-title{
+            font-size:20px;line-height:1.3;margin-bottom:10px;color:#fff
+        }
+        .single-post-view .post-meta{
+            font-size:11px;color:#888;margin-bottom:12px;padding-bottom:12px;
+            border-bottom:1px solid #222;display:flex;flex-wrap:wrap;gap:6px;align-items:center
+        }
+        .single-post-view .post-body{
+            font-size:14px;line-height:1.6;color:#ccc
+        }
+        .single-post-view .post-body img{
+            max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block
+        }
+        .single-post-view .post-body a{color:#e94560;text-decoration:underline}
+        
+        .post-label-link{
+            display:inline-block;background:#1a1a1a;padding:2px 8px;
+            border-radius:10px;font-size:10px;color:#999;text-decoration:none
+        }
+        .post-label-link:hover{background:#333;color:#fff}
+        
+        .related-section{margin-top:20px}
+        .related-section h3{font-size:15px;margin-bottom:10px;color:#fff}
+        .related-grid{
+            display:grid;grid-template-columns:repeat(2,1fr);gap:8px
+        }
+        @media(min-width:500px){.related-grid{grid-template-columns:repeat(4,1fr)}}
+        .related-card{
+            background:#1a1a1a;border-radius:6px;overflow:hidden;
+            text-decoration:none;display:block;transition:transform 0.2s
+        }
+        .related-card:hover{transform:translateY(-2px)}
+        .related-card-img{
+            width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;display:block
+        }
+        .related-card-title{
+            font-size:10px;font-weight:600;color:#ccc;padding:6px 8px;
+            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+        }
+        
         .pagination{display:flex;justify-content:center;gap:6px;margin-top:20px}
         .pagination a,.pagination span{
             display:inline-flex;align-items:center;justify-content:center;
@@ -157,6 +207,11 @@ layout: null
         <a href="/privacy-policy/">Privacy Policy</a>
         <a href="/terms-and-conditions/">Terms &amp; Conditions</a>
     </nav>
+
+    <a class="back-link" id="backLink" style="display:none" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+    </a>
 
     <div class="breadcrumb" id="breadcrumb"><a href="/">Home</a></div>
 
@@ -213,20 +268,12 @@ layout: null
             }
         };
         
-        // ============================================
-        // ⚙️ AREA KONFIGURASI ⚙️
-        // ============================================
-        const BLOG_ID = '3878198361264397837';
-        const MAX_POSTS_PER_PAGE = 24;
-        const DEFAULT_LABEL = '';
-        // ============================================
-        
         const p = new URLSearchParams(location.search);
+        const LABEL = p.get('label')||'';
         const POST_SLUG = p.get('p')||'';
+        const MAX = parseInt(p.get('max-results'))||24;
         const START = parseInt(p.get('start-index'))||1;
-        const MAX = parseInt(p.get('max-results'))||MAX_POSTS_PER_PAGE;
-        const BID = p.get('blogid')||BLOG_ID;
-        const LABEL = p.get('label')||DEFAULT_LABEL;
+        const BID = p.get('blogid')||'3878198361264397837';
         
         $('canonicalUrl').href = location.href;
         
@@ -246,37 +293,129 @@ layout: null
             'https://www.blogger.com/feeds/'+BID+'/posts/default';
         
         // ============================================
-        // SINGLE POST - Redirect ke URL asli
+        // SINGLE POST MODE
         // ============================================
         if(POST_SLUG){
-            // Fetch 1 postingan terbaru untuk dapat URL blog
-            const feedUrl = base+'?alt=json-in-script&callback=sp&max-results=1';
+            $('searchForm').style.display = 'none';
+            $('searchHint').style.display = 'none';
+            $('backLink').style.display = 'inline-flex';
+            if(document.referrer && document.referrer.includes(host)){
+                $('backLink').href = document.referrer;
+            }
+            $('pagination').style.display = 'none';
+            
+            const feedUrl = base+'?alt=json-in-script&callback=sp&max-results=50';
             
             window.sp = function(data){
                 const feed = data.feed;
+                const container = $('mainContent');
+                
                 if(!feed||!feed.entry){
-                    window.location.href = '/';
+                    container.innerHTML = '<p class="error">Post not found.</p>';
                     return;
                 }
                 
                 const entries = Array.isArray(feed.entry)?feed.entry:[feed.entry];
-                const post = entries[0];
-                const link = (post.link||[]).find(l=>l.rel==='alternate')?.href||'/';
+                const post = entries.find(e=>{
+                    const link = (e.link||[]).find(l=>l.rel==='alternate')?.href||'';
+                    const slug = link.split('/').pop().replace('.html','');
+                    return slug === POST_SLUG;
+                });
                 
-                // Ambil base URL blog dari postingan pertama
-                const urlParts = link.split('/');
-                // Format: https://blog.blogspot.com/YYYY/MM/slug.html
-                // Ambil https://blog.blogspot.com + slug
-                const blogBase = urlParts.slice(0,3).join('/');
-                const targetUrl = blogBase + '/search?q=' + encodeURIComponent(POST_SLUG.replace(/-/g,' '));
+                if(!post){
+                    container.innerHTML = '<p class="error">Post not found. <a href="/" style="color:#e94560">Back to home</a></p>';
+                    return;
+                }
                 
-                window.location.href = targetUrl;
+                const title = post.title?.$t||'Untitled';
+                const date = fd(post.published?.$t);
+                const content = post.content?.$t||post.summary?.$t||'';
+                const cats = (post.category||[]).map(c=>c.term).filter(Boolean);
+                const author = post.author?.[0]?.name?.$t||'';
+                const imgAlt = altText(title, cats);
+                
+                // SEO: Fokus nama + leak
+                let seoTitle = title;
+                const leakedTerms = ['leaked','leak','viral','terbaru','exclusive','hot','terkini'];
+                const hasLeakedTerm = leakedTerms.some(t=>title.toLowerCase().includes(t));
+                if(!hasLeakedTerm && cats.some(c=>leakedTerms.some(t=>c.toLowerCase().includes(t)))){
+                    seoTitle = title + ' Leaked Photos';
+                } else if(!hasLeakedTerm){
+                    seoTitle = title + ' Leaked';
+                }
+                
+                document.title = seoTitle + ' — ' + displayName;
+                $('pageHeading').textContent = title;
+                $('siteDesc').textContent = 'View latest leaked photos of ' + title + ' on ' + displayName + '.';
+                
+                const md = document.querySelector('meta[name="description"]')||document.createElement('meta');
+                md.name = 'description';
+                md.content = 'View latest leaked photos, viral content, and exclusive updates of ' + title + ' on ' + displayName + '.';
+                if(!md.parentNode) document.head.appendChild(md);
+                
+                let breadHtml = '<a href="/">Home</a>';
+                if(cats.length){
+                    breadHtml += ' &rsaquo; ' + cats.slice(0,3).map(c=>
+                        '<a href="/?label='+encodeURIComponent(c)+'">'+esc(c)+'</a>'
+                    ).join(', ');
+                }
+                breadHtml += ' &rsaquo; <span>'+esc(title)+'</span>';
+                $('breadcrumb').innerHTML = breadHtml;
+                
+                let html = '<article class="single-post-view">';
+                html += '<h1 class="post-title">'+esc(title)+'</h1>';
+                html += '<div class="post-meta">';
+                if(author) html += '<span>'+esc(author)+'</span>';
+                if(date) html += '<time datetime="'+(post.published?.$t||'')+'">'+date+'</time>';
+                if(cats.length) html += cats.map(c=>
+                    '<a href="/?label='+encodeURIComponent(c)+'" class="post-label-link">'+esc(c)+'</a>'
+                ).join('');
+                html += '</div>';
+                
+                let fixedContent = content;
+                fixedContent = fixedContent.replace(/<img([^>]*)alt="([^"]*)"([^>]*)>/gi, function(match, before, oldAlt, after){
+                    return '<img'+before+'alt="'+esc(imgAlt)+'"'+after+'>';
+                });
+                fixedContent = fixedContent.replace(/<img((?:(?!alt=)[^>])*)>/gi, function(match, attrs){
+                    return '<img'+attrs+' alt="'+esc(imgAlt)+'">';
+                });
+                html += '<div class="post-body">'+fixedContent+'</div>';
+                html += '</article>';
+                
+                const relatedPosts = allEntries.filter(e=>{
+                    const link = (e.link||[]).find(l=>l.rel==='alternate')?.href||'';
+                    const slug = link.split('/').pop().replace('.html','');
+                    if(slug === POST_SLUG) return false;
+                    const eCats = (e.category||[]).map(c=>c.term.toLowerCase());
+                    return cats.some(c=>eCats.includes(c.toLowerCase()));
+                }).slice(0,4);
+                
+                if(relatedPosts.length){
+                    html += '<div class="related-section"><h3>More Leaked Photos</h3><div class="related-grid">';
+                    relatedPosts.forEach(e=>{
+                        const t = e.title?.$t||'Untitled';
+                        const link = (e.link||[]).find(l=>l.rel==='alternate')?.href||'#';
+                        const slug = link.split('/').pop().replace('.html','');
+                        const thumb = hd(e.media$thumbnail?.url);
+                        const relUrl = '/?p='+slug+(BID!=='3878198361264397837'?'&blogid='+BID:'');
+                        const eCats = (e.category||[]).map(c=>c.term).filter(Boolean);
+                        const relAlt = altText(t, eCats);
+                        
+                        html += '<a href="'+relUrl+'" class="related-card">';
+                        if(thumb) html += '<img class="related-card-img" src="'+thumb+'" alt="'+esc(relAlt)+'" loading="lazy" onerror="this.style.display=\'none\'">';
+                        html += '<span class="related-card-title">'+esc(t)+'</span></a>';
+                    });
+                    html += '</div></div>';
+                }
+                
+                container.innerHTML = html;
+                $('pagination').innerHTML = '';
             };
             
             const s = document.createElement('script');
             s.src = feedUrl;
             s.async = true;
-            s.onerror = ()=>window.location.href = '/';
+            s.onerror = ()=>$('mainContent').innerHTML='<p class="error">Failed to load.</p>';
             document.head.appendChild(s);
             return;
         }
@@ -294,6 +433,7 @@ layout: null
             $('searchHint').textContent = 'Try: name leaked, viral, terbaru, exclusive';
         }
         
+        // SEO: Semua halaman fokus nama + leak
         if(LABEL){
             const isLeakedQuery = /leak|viral|terbaru|exclusive|hot|terkini/i.test(LABEL);
             let pageTitle, pageDesc;
@@ -329,9 +469,17 @@ layout: null
             document.head.appendChild(md);
         }
         
-        // Link postingan langsung ke URL asli Blogger
         function il(u){
-            return u || '#';
+            if(!u)return'#';
+            try{
+                const ur=new URL(u);
+                const slug = ur.pathname.split('/').pop().replace('.html','');
+                const pp = new URLSearchParams();
+                if(BID!=='3878198361264397837') pp.set('blogid',BID);
+                pp.set('p',slug);
+                return '/?'+pp.toString();
+            }catch(e){}
+            return u;
         }
         
         function buildUrl(useLabel){
@@ -433,9 +581,9 @@ layout: null
             
             function bu(page){
                 const pp=new URLSearchParams();
-                if(BID!==BLOG_ID)pp.set('blogid',BID);
+                if(BID!=='3878198361264397837')pp.set('blogid',BID);
                 if(LABEL && !labelMatched)pp.set('label',LABEL);
-                if(MAX!==MAX_POSTS_PER_PAGE)pp.set('max-results',MAX);
+                if(MAX!==24)pp.set('max-results',MAX);
                 if(page>1)pp.set('start-index',(page-1)*MAX+1);
                 const q=pp.toString();return q?'/?'+q:'/';
             }
