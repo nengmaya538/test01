@@ -13,6 +13,7 @@ permalink: /name/
     <link rel="preconnect" href="https://blogger.googleusercontent.com">
     <link rel="dns-prefetch" href="https://www.blogger.com">
     <link rel="canonical" id="canonicalUrl" href="">
+    <link rel="alternate" type="application/atom+xml" title="RSS Feed" id="rssFeed" href="">
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{font-family:system-ui,-apple-system,sans-serif;max-width:100%;margin:0 auto;padding:70px 8px 20px;background:#0a0a0a;color:#e0e0e0;line-height:1.5}
@@ -26,6 +27,8 @@ permalink: /name/
         aside.menu{display:none;position:fixed;z-index:99;background:#1a1a1a;border:1px solid #333;padding:12px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.5)}
         aside.menu a{display:block;padding:8px 12px;color:#ccc;text-decoration:none;border-radius:4px;font-size:13px;font-weight:500}
         aside.menu a:active{background:rgba(255,255,255,.05)}
+        .back-link{display:inline-flex;align-items:center;gap:4px;color:#e94560;text-decoration:none;font-size:13px;font-weight:500;margin-bottom:16px}
+        .back-link svg{width:16px;height:16px}
         .search-wrap{display:flex;gap:8px;margin-bottom:6px}
         .search-input{flex:1;padding:10px 14px;border:1px solid #333;border-radius:8px;font-size:14px;font-family:inherit;outline:none;background:#1a1a1a;color:#fff}
         .search-input:focus{border-color:#e94560}
@@ -52,6 +55,14 @@ permalink: /name/
         .post-card h2{font-size:12px;font-weight:600;line-height:1.3;margin:0}
         .post-card h2 a{color:#e0e0e0;text-decoration:none}
         .post-card h2 a:hover{color:#e94560}
+        .single-post-view{background:#111;padding:16px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+        .single-post-view h1.post-title{font-size:20px;line-height:1.3;margin-bottom:10px;color:#fff}
+        .single-post-view .post-meta{font-size:11px;color:#888;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #222;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+        .single-post-view .post-body{font-size:14px;line-height:1.7;color:#ccc}
+        .single-post-view .post-body img{max-width:100%;height:auto;border-radius:6px;margin:8px 0;display:block;cursor:pointer}
+        .single-post-view .post-body a{color:#e94560;text-decoration:underline}
+        .post-label-link{display:inline-block;background:#1a1a1a;padding:2px 8px;border-radius:10px;font-size:10px;color:#999;text-decoration:none}
+        .post-label-link:hover{background:#333;color:#fff}
         .no-img{aspect-ratio:2/3;background:#1a1a1a;display:none;align-items:center;justify-content:center;color:#555;font-size:12px}
         .loading,.error,.empty{text-align:center;padding:40px 20px;color:#888;font-size:14px}
         .error{color:#e94560}
@@ -76,7 +87,7 @@ permalink: /name/
         .lightbox-related .related-card{background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;text-decoration:none;display:block}
         .lightbox-related .related-card-img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
         .lightbox-related .related-card-title{font-size:9px;color:#ccc;padding:3px 5px;display:block;line-height:1.2}
-        .post-card-img{cursor:pointer}
+        .post-card-img,.post-body img{cursor:pointer}
     </style>
     {% include head.html %}
     {% include verif.html %}
@@ -104,6 +115,11 @@ permalink: /name/
         <a href="/terms-and-conditions/">Terms &amp; Conditions</a>
     </aside>
 
+    <a class="back-link" id="backLink" style="display:none" href="/name/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+    </a>
+
     <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"><a href="/name/">Home</a></nav>
 
     <form class="search-wrap" id="searchForm" action="/name/" method="get">
@@ -116,6 +132,7 @@ permalink: /name/
     <p class="desc" id="siteDesc"></p>
     <div class="filter-bar" id="filterBar" style="display:none"></div>
     <div id="mainContent"><p class="loading">Loading...</p></div>
+    <div class="pagination" id="pagination"></div>
 
     <footer>{% include footer.html %}</footer>
 
@@ -160,9 +177,7 @@ permalink: /name/
         // ============================================
         // ⚙️ CONFIGURATION ⚙️
         // ============================================
-        var ALL_BLOG_IDS=[
-            '3849070220815751744'
-        ];
+        var BLOG_ID = '3878198361264397837';
         var MAX_POSTS_PER_PAGE = 24;
         var DEFAULT_START_INDEX = 1;
         var DEFAULT_LABEL = '';
@@ -186,39 +201,38 @@ permalink: /name/
         }
         
         var seed=hashDomain(host);
-        var BLOG_IDS=seededShuffle(ALL_BLOG_IDS,seed);
         
         var p=new URLSearchParams(location.search);
+        var POST_SLUG=p.get('p')||'';
         var START=parseInt(p.get('start-index'))||DEFAULT_START_INDEX;
         var MAX=parseInt(p.get('max-results'))||MAX_POSTS_PER_PAGE;
         var LABEL=p.get('label')||DEFAULT_LABEL;
         var isLabelPage = LABEL ? true : false;
         $('canonicalUrl').href=location.href;
         
-        // RSS Feeds
-        var rssFrag=document.createDocumentFragment();
-        for(var r=0;r<BLOG_IDS.length;r++){
-            var rssLink=document.createElement('link');
-            rssLink.rel='alternate';
-            rssLink.type='application/atom+xml';
-            rssLink.title='RSS Feed '+(r+1);
-            rssLink.href='https://www.blogger.com/feeds/'+BLOG_IDS[r]+'/posts/default?alt=rss';
-            rssFrag.appendChild(rssLink);
-        }
-        document.head.appendChild(rssFrag);
+        // RSS Feed
+        $('rssFeed').href='https://www.blogger.com/feeds/'+BLOG_ID+'/posts/default?alt=rss';
         
         function hd(u){return u&&u.includes('googleusercontent.com')?u.replace(/\/s\d+(-c)?\//,'/s1600/'):u;}
+        function fd(d){try{return new Date(d).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}catch(e){return d;}}
         function altText(t,c){var p=[t];if(c&&c.length)p.push(c.join(', '));return p.filter(Boolean).join(' - ');}
-        function il(u){return u||'#';}
+        
+        function il(u){
+            if(!u)return'#';
+            try{var ur=new URL(u);var slug=ur.pathname.split('/').pop().replace('.html','');return BASE_PATH+'?p='+slug;}catch(e){}
+            return u;
+        }
         
         function labelLink(label,isLabelPg){
             if(isLabelPg){
                 if(host.includes('blogspot.com'))return 'https://'+host+'/search?q='+label;
-                else return 'https://www.blogger.com/feeds/'+BLOG_IDS[0]+'/posts/default?q='+label;
+                else return 'https://www.blogger.com/feeds/'+BLOG_ID+'/posts/default?q='+label;
             }else{
                 return BASE_PATH+'?label='+label;
             }
         }
+        
+        var base='https://www.blogger.com/feeds/'+BLOG_ID+'/posts/default';
         
         // ============================================
         // LIGHTBOX
@@ -227,8 +241,7 @@ permalink: /name/
         var lb=$('lightbox'),lbTrack=$('lbTrack'),lbCounter=$('lbCounter'),lbCaption=$('lbCaption');
         
         function loadRelatedPosts(label){
-            var bid=BLOG_IDS[0];
-            var url='https://www.blogger.com/feeds/'+bid+'/posts/default?alt=json-in-script&callback=lbrp&max-results=4&category='+label;
+            var url=base+'?alt=json-in-script&callback=lbrp&max-results=4&category='+label;
             
             window.lbrp=function(data){
                 var feed=data.feed;
@@ -309,7 +322,7 @@ permalink: /name/
         });
         
         function attachLightbox(){
-            var allImages=document.querySelectorAll('.post-card-img');
+            var allImages=document.querySelectorAll('.post-card-img, .post-body img');
             var images=[];
             allImages.forEach(function(img){
                 if(img.src&&!img.src.includes('data:image/svg+xml')){
@@ -345,65 +358,8 @@ permalink: /name/
             }else{
                 html+='<div class="no-img" style="display:flex">No Image</div>';
             }
-            html+='<div class="post-card-info"><h2><a href="'+link+'" target="_blank" rel="noopener">'+t+'</a></h2></div></article>';
+            html+='<div class="post-card-info"><h2><a href="'+link+'">'+t+'</a></h2></div></article>';
             return html;
-        }
-        
-        // ============================================
-        // MULTI BLOG FETCH - TANPA CATEGORY, FILTER CLIENT-SIDE
-        // ============================================
-        function fetchAllBlogs(callback, useLabel, pageStart, pageMax){
-            var allPosts=[];
-            var completed=0;
-            var totalBlogs=BLOG_IDS.length;
-            if(totalBlogs===0){callback([],0);return;}
-            
-            BLOG_IDS.forEach(function(bid,idx){
-                var base='https://www.blogger.com/feeds/'+bid+'/posts/default';
-                var fp=new URLSearchParams();
-                fp.set('alt','json-in-script');
-                fp.set('callback','mb'+idx);
-                fp.set('max-results',pageMax);
-                fp.set('start-index',pageStart);
-                // TIDAK kirim category - filter di client-side
-                
-                window['mb'+idx]=function(data){
-                    var feed=data.feed;
-                    if(feed&&feed.entry){
-                        var entries=Array.isArray(feed.entry)?feed.entry:[feed.entry];
-                        for(var i=0;i<entries.length;i++){allPosts.push(entries[i]);}
-                    }
-                    completed++;
-                    if(completed>=totalBlogs){
-                        // Filter di sini setelah semua blog selesai
-                        if(useLabel){
-                            allPosts=allPosts.filter(function(post){
-                                var cats=(post.category||[]).map(function(c){return c.term;});
-                                return cats.indexOf(useLabel)!==-1;
-                            });
-                        }
-                        var shuffled=seededShuffle(allPosts,seed+pageStart);
-                        callback(shuffled,allPosts.length);
-                    }
-                };
-                
-                var s=document.createElement('script');
-                s.src=base+'?'+fp.toString();s.async=true;
-                s.onerror=function(){
-                    completed++;
-                    if(completed>=totalBlogs){
-                        if(useLabel){
-                            allPosts=allPosts.filter(function(post){
-                                var cats=(post.category||[]).map(function(c){return c.term;});
-                                return cats.indexOf(useLabel)!==-1;
-                            });
-                        }
-                        var shuffled=seededShuffle(allPosts,seed+pageStart);
-                        callback(shuffled,allPosts.length);
-                    }
-                };
-                document.head.appendChild(s);
-            });
         }
         
         // ============================================
@@ -436,6 +392,108 @@ permalink: /name/
         }
         
         // ============================================
+        // SINGLE POST MODE - FULL CONTENT
+        // ============================================
+        if(POST_SLUG){
+            $('searchForm').style.display='none';
+            $('searchHint').style.display='none';
+            $('backLink').style.display='inline-flex';
+            if(document.referrer&&document.referrer.includes(host))$('backLink').href=document.referrer;
+            $('pagination').style.display='none';
+            
+            var pageId=POST_SLUG.replace(/-/g,' ');
+            $('pageHeading').textContent=pageId;
+            $('siteDesc').textContent='Loading post...';
+            $('breadcrumb').innerHTML='<a href="'+BASE_PATH+'">Home</a> &rsaquo; <span>'+pageId+'</span>';
+            
+            var feedUrl=base+'?alt=json-in-script&callback=sp&max-results=50';
+            
+            window.sp=function(data){
+                var feed=data.feed;
+                var container=$('mainContent');
+                
+                if(!feed||!feed.entry){
+                    container.innerHTML='<p class="error">Post not found. <a href="'+BASE_PATH+'" style="color:#e94560">Back to home</a></p>';
+                    return;
+                }
+                
+                var entries=Array.isArray(feed.entry)?feed.entry:[feed.entry];
+                var post=entries.find(function(e){
+                    var link=(e.link||[]).find(function(l){return l.rel==='alternate';})?.href||'';
+                    var slug=link.split('/').pop().replace('.html','');
+                    return slug===POST_SLUG;
+                });
+                
+                if(!post){
+                    container.innerHTML='<p class="error">Post not found. <a href="'+BASE_PATH+'" style="color:#e94560">Back to home</a></p>';
+                    return;
+                }
+                
+                var title=post.title?.$t||'Untitled';
+                var date=fd(post.published?.$t);
+                var content=post.content?.$t||post.summary?.$t||'';
+                var cats=(post.category||[]).map(function(c){return c.term;}).filter(Boolean);
+                var author=post.author?.[0]?.name?.$t||'';
+                var imgAlt=altText(title,cats);
+                
+                var leakedTerms=['leaked','leak','viral','latest','exclusive','hot','new'];
+                var hasLeaked=leakedTerms.some(function(t){return title.toLowerCase().includes(t);});
+                var seoTitle=title;
+                if(!hasLeaked)seoTitle=title+' Leaked Photos';
+                
+                document.title=seoTitle+' — '+dn;
+                $('pageHeading').textContent=title;
+                $('siteDesc').textContent='View latest leaked photos of '+title+' on '+dn+'.';
+                
+                var md=document.createElement('meta');md.name='description';
+                md.content='View latest leaked photos, viral content, and exclusive updates of '+title+' on '+dn+'.';
+                document.head.appendChild(md);
+                
+                var breadHtml='<a href="'+BASE_PATH+'">Home</a>';
+                if(cats.length){
+                    breadHtml+=' &rsaquo; '+cats.slice(0,3).map(function(c){
+                        return'<a href="'+BASE_PATH+'?label='+c+'">'+c+'</a>';
+                    }).join(', ');
+                }
+                breadHtml+=' &rsaquo; <span>'+title+'</span>';
+                $('breadcrumb').innerHTML=breadHtml;
+                
+                var html='<article class="single-post-view">';
+                html+='<h1 class="post-title">'+title+'</h1>';
+                html+='<div class="post-meta">';
+                if(author)html+='<span>'+author+'</span>';
+                if(date)html+='<time datetime="'+(post.published?.$t||'')+'">'+date+'</time>';
+                if(cats.length)html+=cats.map(function(c){
+                    return'<a href="'+BASE_PATH+'?label='+c+'" class="post-label-link">'+c+'</a>';
+                }).join('');
+                html+='</div>';
+                
+                var fixedContent=content;
+                fixedContent=fixedContent.replace(/<img([^>]*)alt="([^"]*)"([^>]*)>/gi,function(match,before,oldAlt,after){
+                    return'<img'+before+'alt="'+imgAlt+'" title="'+imgAlt+'"'+after+'>';
+                });
+                fixedContent=fixedContent.replace(/<img((?:(?!alt=)[^>])*)>/gi,function(match,attrs){
+                    return'<img'+attrs+' alt="'+imgAlt+'" title="'+imgAlt+'">';
+                });
+                html+='<div class="post-body">'+fixedContent+'</div>';
+                html+='</article>';
+                
+                container.innerHTML=html;
+                $('pagination').innerHTML='';
+                
+                setTimeout(function(){
+                    attachLightbox();
+                },100);
+            };
+            
+            var s=document.createElement('script');
+            s.src=feedUrl;s.async=true;
+            s.onerror=function(){$('mainContent').innerHTML='<p class="error">Failed to load.</p>';};
+            document.head.appendChild(s);
+            return;
+        }
+        
+        // ============================================
         // GRID MODE
         // ============================================
         var si=$('searchInput');if(si&&LABEL)si.value=LABEL;
@@ -456,9 +514,34 @@ permalink: /name/
             var md3=document.createElement('meta');md3.name='description';md3.content='Latest leaked photos, viral content, and exclusive updates on '+dn+'. New photos added regularly.';document.head.appendChild(md3);
         }
         
-        // perBlog lebih besar karena tidak pakai filter category (ambil semua, filter nanti)
-        var perBlog=Math.ceil(MAX/BLOG_IDS.length)*3;
-        fetchAllBlogs(function(posts){
+        function fetchPosts(callback){
+            var fp=new URLSearchParams();
+            fp.set('alt','json-in-script');
+            fp.set('callback','hp');
+            fp.set('max-results',MAX);
+            fp.set('start-index',START);
+            
+            window.hp=function(data){
+                var feed=data.feed;
+                if(!feed||!feed.entry){callback([]);return;}
+                var entries=Array.isArray(feed.entry)?feed.entry:[feed.entry];
+                
+                if(LABEL){
+                    entries=entries.filter(function(post){
+                        var cats=(post.category||[]).map(function(c){return c.term;});
+                        return cats.indexOf(LABEL)!==-1;
+                    });
+                }
+                callback(entries);
+            };
+            
+            var s=document.createElement('script');
+            s.src=base+'?'+fp.toString();s.async=true;
+            s.onerror=function(){callback([]);};
+            document.head.appendChild(s);
+        }
+        
+        fetchPosts(function(posts){
             var container=$('mainContent');
             if(!posts.length){container.innerHTML='<p class="empty">No posts found.</p>';return;}
             var display=posts.slice(0,MAX);
@@ -471,7 +554,7 @@ permalink: /name/
             
             buildBreadcrumb(allLabels,LABEL);
             
-            var html='<p class="count-bar">Showing '+display.length+' leaked photos from '+BLOG_IDS.length+' sources</p><div class="post-grid">';
+            var html='<p class="count-bar">Showing '+display.length+' leaked photos</p><div class="post-grid">';
             for(var k=0;k<display.length;k++){html+=renderCard(display[k]);}
             html+='</div>';container.innerHTML=html;
             attachLightbox();
@@ -494,7 +577,7 @@ permalink: /name/
                 'url':location.href,
                 'mainEntity':{'@type':'ImageGallery','image':structuredPosts}
             },null,2);
-        },LABEL,START,perBlog);
+        });
     })();
     </script>
 </body>
